@@ -1,0 +1,19 @@
+{
+  "name": "structurizr-typescript-sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^11.13.2",
+    "typescript": "3.7.3"
+  },
+  "dependencies": {
+    "structurizr-typescript": "1.0.8"
+  }
+}
