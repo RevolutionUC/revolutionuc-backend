@@ -1,3 +1,6 @@
+import { config } from 'dotenv';
+config();
+
 import { workspace } from './workspace';
 import { pushWorkspace } from './pushWorkspace';
 import { exportPlantUML } from './exportPlantUML';
