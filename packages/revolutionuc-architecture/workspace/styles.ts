@@ -32,9 +32,9 @@ componentStyle.background = "#438dd5";
 styles.addElementStyle(componentStyle);
 
 const softwaresystemStyle = new ElementStyle(Tags.SoftwareSystem);
-softwaresystemStyle.shape = Shape.Circle;
+softwaresystemStyle.shape = Shape.Hexagon;
 softwaresystemStyle.color = "#ffffff";
-softwaresystemStyle.background = "#438dd5";
+softwaresystemStyle.background = "#073b6e";
 styles.addElementStyle(softwaresystemStyle);
 
 const dbStyle = new ElementStyle(MyTags.database);
