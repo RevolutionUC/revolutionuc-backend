@@ -1,5 +1,5 @@
 export const environment = {
-  production: process.env.production === 'true',
+  production: process.env.production !== 'false',
   PORT: process.env.PORT,
   CRYPTO_KEY: process.env.CRYPTO_KEY,
   sendgridApiKey: process.env.SENDGRID_API_KEY,
