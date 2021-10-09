@@ -3,5 +3,6 @@ export class ProjectDto {
   url: string;
   submitter: string;
   team: string[];
+
   categories: string[];
 }

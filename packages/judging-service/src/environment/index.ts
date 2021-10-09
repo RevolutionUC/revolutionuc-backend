@@ -1,12 +1,12 @@
-export const environment = {
-  production: process.env.production !== 'false',
-  PORT: process.env.PORT,
-  CRYPTO_KEY: process.env.CRYPTO_KEY,
-  sendgridApiKey: process.env.SENDGRID_API_KEY,
-  judgePassword: process.env.JUDGE_PASSWORD,
-  database_config: {
-    url: process.env.DATABASE_URL,
-    synchronize: process.env.production !== 'true',
-    logging: true,
-  },
+export const ENV = {
+  DATABASE_URL: `DATABASE_URL`,
+  production: `production`,
+  PORT: `PORT`,
+  CRYPTO_KEY: `CRYPTO_KEY`,
+  SENDGRID_API_KEY: `SENDGRID_API_KEY`,
+  JUDGE_PASSWORD: `JUDGE_PASSWORD`,
+  DEVPOST_TITLE_COLUMN: `DEVPOST_TITLE_COLUMN`,
+  DEVPOST_URL_COLUMN: `DEVPOST_URL_COLUMN`,
+  DEVPOST_CATEGORY_COLUMN: `DEVPOST_CATEGORY_COLUMN`,
+  DEVPOST_TABLE_NUMBER_COLUMN: `DEVPOST_TABLE_NUMBER_COLUMN`,
 };

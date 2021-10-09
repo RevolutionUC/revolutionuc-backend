@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Put } from '@nestjs/common';
 import { JudgeService } from './judge.service';
-import { Judge } from '../entities/judge.entity';
 import { CurrentUser, CurrentUserDto } from 'src/auth/currentuser';
 import { UseAuth } from 'src/auth/auth.decorator';
+import { Judge } from '../domain/aggregates/category/judge.entity';
 
 @Controller('judge')
 @UseAuth(['JUDGE'])

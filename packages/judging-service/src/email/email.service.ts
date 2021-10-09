@@ -1,14 +1,11 @@
 import { readFile } from 'fs';
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as sgMail from '@sendgrid/mail';
 import Handlebars from 'handlebars';
-import { Judge } from '../judging/entities/judge.entity';
 import { AuthService } from 'src/auth/auth.service';
-import { environment } from 'src/environment';
-
-const sendgridApiKey = environment.sendgridApiKey;
-
-sgMail.setApiKey(sendgridApiKey);
+import { ENV } from 'src/environment';
+import { Judge } from 'src/judging/domain/aggregates/category/judge.entity';
 
 @Injectable()
 export class EmailService {
@@ -19,8 +16,14 @@ export class EmailService {
     link: string;
   }>;
 
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private configService: ConfigService,
+  ) {
     this.getJudgingEmailTemplate();
+
+    const SENDGRID_API_KEY = this.configService.get(ENV.SENDGRID_API_KEY);
+    sgMail.setApiKey(SENDGRID_API_KEY);
   }
 
   private getJudgingEmailTemplate(): void {

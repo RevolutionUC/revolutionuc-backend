@@ -11,14 +11,12 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JudgeDto } from '../dtos/judge.dto';
-import { JudgingConfigDto } from '../dtos/config.dto';
-import { Judge } from '../entities/judge.entity';
-import { Submission } from '../entities/submission.entity';
-import { Project } from '../entities/project.entity';
-import { Category } from '../entities/category.entity';
-import { Group } from '../entities/group.entity';
-import { JudgingConfig } from '../entities/config.entity';
 import { AdminService } from './admin.service';
+import { Category } from '../domain/aggregates/category/category.entity';
+import { Group } from '../domain/aggregates/category/group.entity';
+import { Judge } from '../domain/aggregates/category/judge.entity';
+import { Submission } from '../domain/aggregates/category/submission.entity';
+import { Project } from '../domain/aggregates/project/project.entity';
 
 @Controller('admin')
 export class AdminController {
@@ -31,7 +29,7 @@ export class AdminController {
 
   @Post(`judge`)
   createJudge(@Body() judge: JudgeDto): Promise<Judge> {
-    return this.adminService.createJudge(judge);
+    return this.adminService.registerJudge(judge);
   }
 
   @Delete(`judge/:id`)
@@ -78,16 +76,6 @@ export class AdminController {
   @Post(`assignment`)
   initiateAssignment(): Promise<Array<Group>> {
     return this.adminService.initiateAssignment();
-  }
-
-  @Get(`config`)
-  getConfig(): Promise<JudgingConfig> {
-    return this.adminService.getConfig();
-  }
-
-  @Put(`config`)
-  updateConfig(@Body() config: JudgingConfigDto): Promise<JudgingConfig> {
-    return this.adminService.updateConfig(config);
   }
 
   @Get(`prizing`)

@@ -1,11 +1,16 @@
 import { Logger } from '@nestjs/common';
-import { JudgingConfig } from '../../entities/config.entity';
-import { ProjectDto } from '../../dtos/project.dto';
+import { ProjectDto } from 'src/judging/dtos/project.dto';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const csvToJson = require('csvjson-csv2json');
 
-export const devpostParser = (csv: string, config: JudgingConfig) => {
+interface DevpostExportConfig {
+  titleColumn: string;
+  urlColumn: string;
+  categoryColumn: string;
+}
+
+export const devpostParser = (csv: string, config: DevpostExportConfig) => {
   const projects: { [key: string]: ProjectDto } = {};
   const json = csvToJson(csv);
 

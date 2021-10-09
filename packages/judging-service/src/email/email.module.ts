@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EmailService } from './email.service';
-import { Judge } from 'src/judging/entities/judge.entity';
 import { AuthModule } from 'src/auth/auth.module';
+import { Judge } from 'src/judging/domain/aggregates/category/judge.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Judge]), AuthModule],

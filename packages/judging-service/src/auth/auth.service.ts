@@ -12,7 +12,14 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-  ) {}
+  ) {
+    // Promise.all([
+    //   this.register(`omar`, `makeuc2021`, `ADMIN`),
+    //   this.register(`chloe`, `makeuc2021`, `ADMIN`),
+    // ]).then(() => {
+    //   console.log(`Admins created`);
+    // });
+  }
 
   private invalidError = new HttpException(
     `Invalid credentials`,
