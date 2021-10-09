@@ -37,7 +37,7 @@ export class EmailService {
 
   private async getJudgingLoginLink(email: string) {
     const { token } = await this.authService.trustedLogin(email);
-    return `https://judging.makeuc.io/login?token=${token}`;
+    return `https://judge.makeuc.io/login?token=${token}`;
   }
 
   async sendJudgingEmail(judge: Judge): Promise<void> {
