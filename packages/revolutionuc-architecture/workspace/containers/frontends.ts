@@ -1,4 +1,4 @@
-import { system } from "./systems";
+import { system } from "../systems";
 
 export const website = system.addContainer(
   'Website',
@@ -13,27 +13,9 @@ export const devWebsite = system.addContainer(
 )!;
 
 export const admin = system.addContainer(
-  'Admin',
+  'Admin Panel',
   'Administrative panel for organizers to manage registrants',
   'Angular and Netlify'
-)!;
-
-export const api = system.addContainer(
-  'API Server',
-  'Monolithic server to manage the entire backend of the hackathon',
-  'NestJS and Heroku'
-)!;
-
-export const database = system.addContainer(
-  'Database',
-  'Store for all the required data',
-  'PostgreSQL'
-)!;
-
-export const emails = system.addContainer(
-  'Email Server',
-  'Manages and sends emails designed using templates',
-  'Nunjucks, Gulp, Mailgun and Heroku'
 )!;
 
 export const judging = system.addContainer(
@@ -54,14 +36,8 @@ export const lattice = system.addContainer(
   'React and Netlify'
 )!;
 
-export const assets = system.addContainer(
-  'Assets',
-  'S3 bucket to store important files',
-  'AWS S3'
-)!;
-
 export const revvit = system.addContainer(
   'Revvit',
-  'Discord bot for convenience commands',
-  'Nodejs and Heroku'
+  'Discord bot interface layer for convenience commands',
+  'DiscordJS'
 )!;

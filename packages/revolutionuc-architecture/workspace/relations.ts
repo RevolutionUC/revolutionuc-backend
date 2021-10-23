@@ -1,5 +1,4 @@
-import { InteractionStyle } from "structurizr-typescript";
-import { website, devWebsite, admin, emails, judging, stats, assets, lattice, api, database, revvit } from "./containers";
+import { website, devWebsite, admin, emails, judging, stats, assets, lattice, api, revvit } from "./containers";
 import { organizer, registrant, judge } from "./persons";
 import { system, discord, mailgun } from "./systems";
 
@@ -35,17 +34,12 @@ admin.uses(api, 'for all functionality', 'HTTP');
 
 judging.uses(api, 'for all functionality', 'HTTP');
 
-api.uses(emails, 'sends automated emails', 'Javascript import');
-api.uses(database, 'stores all the data', 'PG');
-api.uses(assets, 'store uploaded resumes', 'HTTP');
-
-stats.uses(database, 'fetches live data', 'PG');
+stats.uses(api, 'fetches live data', 'HTTP');
 
 lattice.uses(api, 'for all functionality', 'HTTP');
 lattice.uses(assets, 'fetches images', 'HTTP');
 
 revvit.uses(api, 'checks in attendees', 'HTTP');
-revvit.uses(database, 'storing attendee information', 'PG');
 revvit.uses(discord, 'receives commands', 'HTTP');
 
 emails.uses(mailgun, 'sends emails', 'HTTP');

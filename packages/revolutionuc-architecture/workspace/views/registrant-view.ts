@@ -1,7 +1,10 @@
+import { latticeMS, attendeeMS } from './../containers/services';
+import { emails } from './../containers/infrastructure';
 import { workspace } from "../workspace";
 import { registrant } from "../persons";
 import { system, discord, mailgun } from "../systems";
-import { api, assets, database, emails, lattice, revvit, website } from "../containers";
+import { api, assets, revvit, website } from "../containers";
+import { registrationMS } from '../containers/services';
 
 export const registrantView = workspace.views.createContainerView(
   system,
@@ -9,14 +12,11 @@ export const registrantView = workspace.views.createContainerView(
   'Container view for the interaction of registrants with the RevolutionUC system'
 );
 
-registrantView.addSoftwareSystem(discord);
-registrantView.addSoftwareSystem(mailgun);
-registrantView.addContainer(website);
-registrantView.addContainer(assets);
-registrantView.addContainer(lattice);
-registrantView.addContainer(api);
-registrantView.addContainer(database);
-registrantView.addContainer(emails);
-registrantView.addContainer(revvit);
 registrantView.addPerson(registrant);
+registrantView.addNearestNeighbours(registrant);
+registrantView.addContainer(api);
+registrantView.addContainer(emails);
+registrantView.addContainer(registrationMS.service);
+registrantView.addContainer(latticeMS.service);
+registrantView.addContainer(attendeeMS.service);
 registrantView.setAutomaticLayout(true);

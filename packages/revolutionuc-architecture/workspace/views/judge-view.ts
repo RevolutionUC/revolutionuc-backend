@@ -1,7 +1,8 @@
+import { judgingMS } from './../containers/services';
 import { workspace } from "../workspace";
 import { judge } from "../persons";
 import { system, discord, mailgun } from "../systems";
-import { api, database, emails, judging, revvit } from "../containers";
+import { api, emails, revvit } from "../containers";
 
 export const judgeView = workspace.views.createContainerView(
   system,
@@ -9,12 +10,9 @@ export const judgeView = workspace.views.createContainerView(
   'Container view for the interaction of judges with the RevolutionUC system'
 );
 
-judgeView.addSoftwareSystem(discord);
-judgeView.addSoftwareSystem(mailgun);
-judgeView.addContainer(judging);
-judgeView.addContainer(api);
-judgeView.addContainer(database);
-judgeView.addContainer(emails);
-judgeView.addContainer(revvit);
 judgeView.addPerson(judge);
+judgeView.addNearestNeighbours(judge);
+judgeView.addContainer(api);
+judgeView.addContainer(emails);
+judgeView.addContainer(judgingMS.service);
 judgeView.setAutomaticLayout(true);

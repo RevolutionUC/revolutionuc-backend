@@ -1,4 +1,4 @@
-import { admin, api, assets, database, devWebsite, emails, judging, lattice, revvit, stats, website } from "../containers";
+import { admin, api, assets, devWebsite, emails, judging, lattice, revvit, stats, website } from "../containers";
 import { logs } from "../logs";
 import { system } from "../systems";
 import { workspace } from "../workspace";
@@ -17,7 +17,7 @@ heroku.addDeploymentNode('Dyno 1', 'Heroku hosting container', 'Heroku Dyno', 1)
 heroku.addDeploymentNode('Dyno 2', 'Heroku hosting container', 'Heroku Dyno', 1)?.add(stats);
 heroku.addDeploymentNode('Dyno 3', 'Heroku hosting container', 'Heroku Dyno', 1)?.add(emails);
 
-herokuPg.add(database);
+// herokuPg.add(database);
 
 netlify.addDeploymentNode('website site', 'Netlify site', 'Netlify')!.add(website);
 netlify.addDeploymentNode('devWebsite site', 'Netlify site', 'Netlify')!.add(devWebsite);

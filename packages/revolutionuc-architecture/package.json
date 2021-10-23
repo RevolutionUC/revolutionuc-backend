@@ -4,13 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf dist && tsc",
-    "start": "npm run build && node dist/index.js"
+    "start": "ts-node index.ts"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@tsconfig/node14": "^1.0.1",
     "@types/node": "^11.13.2",
+    "ts-node": "^10.4.0",
     "typescript": "3.7.3"
   },
   "dependencies": {

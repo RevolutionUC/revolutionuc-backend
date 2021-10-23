@@ -1,5 +1,5 @@
 import { workspace } from "../workspace";
-import { system, discord } from "../systems";
+import { system, discord, mailgun } from "../systems";
 
 export const systemContextView = workspace.views.createSystemContextView(
   system,
@@ -8,5 +8,6 @@ export const systemContextView = workspace.views.createSystemContextView(
 );
 systemContextView.addNearestNeighbours(system);
 systemContextView.addNearestNeighbours(discord);
+systemContextView.addNearestNeighbours(mailgun);
 systemContextView.addAllPeople();
 systemContextView.setAutomaticLayout(true);
