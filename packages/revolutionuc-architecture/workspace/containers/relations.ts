@@ -1,14 +1,14 @@
 import { assets, Infrastructure, Services } from '.';
 
-const { api, emails } = Infrastructure;
+const { api, emails, queue } = Infrastructure;
 
 Object.entries(Services).forEach(([name, { service }]) => {
-  if(name === `authService`) {
-    api.uses(service, `authenticates requests using`);
-  } else {
-    api.uses(service, `routes request to`);
-  }
-  service.uses(emails, `send emails`);
+  service.uses(queue, `sends and receive messages`);
 });
 
+api.uses(queue, `sends and receive messages`);
+
+emails.uses(queue, `sends and receive messages`);
+
 Services.registrationMS.service.uses(assets, `stores registrant resumes`);
+Services.latticeMS.service.uses(assets, `stores lattice skill logos`);

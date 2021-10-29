@@ -23,3 +23,9 @@ export const assets = system.addContainer(
   'S3 bucket to store important files',
   'AWS S3'
 )!;
+
+export const queue = system.addContainer(
+  'Message Queue',
+  'Queue to transport command and event messages',
+  'RabbitMQ'
+)!;

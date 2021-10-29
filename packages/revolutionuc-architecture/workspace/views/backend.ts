@@ -10,7 +10,6 @@ export const backendView = workspace.views.createContainerView(
 );
 Object.values(Services).forEach(s => {
   backendView.addContainer(s.service)
-  backendView.addContainer(s.database)
 });
 Object.values(Infrastructure).forEach(infra => backendView.addContainer(infra));
 backendView.addPerson(organizer);
