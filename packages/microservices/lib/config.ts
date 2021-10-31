@@ -27,6 +27,12 @@ export const Configuration: ServiceConfig = Object.entries(
     throw new Error(`Missing environment variables for service ${key}`);
   }
 
+  logger.log(`Found environment variables for service ${key}`, {
+    host,
+    port,
+    databaseUrl,
+  });
+
   acc[key] = {
     host,
     port,

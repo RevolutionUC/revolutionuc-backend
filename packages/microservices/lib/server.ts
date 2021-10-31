@@ -10,6 +10,8 @@ export async function BootstrapMicroservice(
   token: keyof typeof SERVICE_TOKENS,
   module: Type<any>,
 ) {
+  logger.log(`Bootstrapping ${token}`);
+
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     module,
     {
