@@ -1,6 +1,10 @@
 {
   "packages": [
-    "packages/*"
+    "packages/auth",
+    "packages/contract",
+    "packages/docs",
+    "packages/judging",
+    "packages/microservices"
   ],
   "version": "0.0.0"
 }
