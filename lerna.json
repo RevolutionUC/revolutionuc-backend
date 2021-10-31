@@ -2,7 +2,7 @@
   "packages": [
     "packages/auth",
     "packages/contract",
-    "packages/judging2",
+    "packages/judging",
     "packages/docs",
     "packages/microservices"
   ],
