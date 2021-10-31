@@ -1,9 +1,2 @@
-export const COMMAND_TOKEN = 'COMMAND';
-export const QUERY_TOKEN = 'QUERY';
-
-export const SERVICE_TOKENS = {
-  ATTENDANCE: 'ATTENDANCE',
-  JUDGING: 'JUDGING',
-  LATTICE: 'LATTICE',
-  REGISTRATION: 'REGISTRATION',
-};
+export * from './tokens';
+export * as Judging from './judging';

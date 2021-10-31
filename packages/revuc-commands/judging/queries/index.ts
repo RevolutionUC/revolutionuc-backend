@@ -1,5 +1,3 @@
-export * as Queries from './queries';
+export * as Tokens from './queries';
 export { Props } from './props';
 export { Response } from './response';
-
-export const COMMAND_KEY = 'COMMAND';

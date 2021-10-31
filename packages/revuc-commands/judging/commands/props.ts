@@ -1,7 +1,7 @@
-import { Commands } from '.';
+import { Tokens } from '.';
 
 export interface Props {
-  [Commands.SUBMIT_PROJECTS]: {
+  [Tokens.SUBMIT_PROJECTS]: {
     title: string;
     url: string;
     submitter: string;
@@ -9,50 +9,50 @@ export interface Props {
     categories: string[];
   }[];
 
-  [Commands.CREATE_CATEGORY]: {
+  [Tokens.CREATE_CATEGORY]: {
     name: string;
     groupCount: number;
     groupsPerSubmission: number;
     mandatory?: boolean;
   };
 
-  [Commands.REGISTER_JUDGE]: {
+  [Tokens.REGISTER_JUDGE]: {
     name: string;
     email: string;
     category?: string;
   };
 
-  [Commands.REMOVE_JUDGE]: {
+  [Tokens.REMOVE_JUDGE]: {
     categoryId: string;
     judgeId: string;
   };
 
-  [Commands.REASSIGN_JUDGE]: {
+  [Tokens.REASSIGN_JUDGE]: {
     judgeId: string;
     formCategoryId: string;
     toCategoryId: string;
   };
 
-  [Commands.DISQUALIFY_PROJECT]: {
+  [Tokens.DISQUALIFY_PROJECT]: {
     projectId: string;
     reason: string;
   };
 
-  [Commands.REQUALIFY_PROJECT]: {
+  [Tokens.REQUALIFY_PROJECT]: {
     projectId: string;
   };
 
-  [Commands.CREATE_JUDGING_GROUPS]: void;
+  [Tokens.CREATE_JUDGING_GROUPS]: void;
 
-  [Commands.SCORE_SUBMISSIONS]: void;
+  [Tokens.SCORE_SUBMISSIONS]: void;
 
-  [Commands.RANK_SUBMISSIONS]: {
+  [Tokens.RANK_SUBMISSIONS]: {
     categoryId: string;
     judgeId: string;
     rankings: string[];
   };
 
-  [Commands.FINALIZE_RANKING]: {
+  [Tokens.FINALIZE_RANKING]: {
     categoryId: string;
     judgeId: string;
   };

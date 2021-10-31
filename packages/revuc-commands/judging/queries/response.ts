@@ -5,28 +5,28 @@ import {
   ProjectDTO,
   SubmissionDTO,
 } from 'judging/dtos';
-import { Queries } from '.';
+import { Tokens } from '.';
 
 export interface Response {
-  [Queries.CATEGORIES]: {
+  [Tokens.CATEGORIES]: {
     categories: CategoryDTO[];
   };
-  [Queries.JUDGES]: {
+  [Tokens.JUDGES]: {
     judges: JudgeDTO[];
   };
-  [Queries.PROJECTS]: {
+  [Tokens.PROJECTS]: {
     projects: ProjectDTO[];
   };
-  [Queries.GROUPS]: {
+  [Tokens.GROUPS]: {
     groups: GroupDTO[];
   };
-  [Queries.SCORED_SUBMISSIONS]: {
+  [Tokens.SCORED_SUBMISSIONS]: {
     submissions: SubmissionDTO[];
   };
-  [Queries.JUDGE]: {
+  [Tokens.JUDGE]: {
     judge: JudgeDTO;
   };
-  [Queries.GET_SUBMISSIONS]: {
+  [Tokens.GET_SUBMISSIONS]: {
     submissions: SubmissionDTO[];
   };
 }

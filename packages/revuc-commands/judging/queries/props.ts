@@ -1,11 +1,11 @@
-import { Queries } from '.';
+import { Tokens } from '.';
 
 export interface Props {
-  [Queries.JUDGE]: {
+  [Tokens.JUDGE]: {
     judgeId: string;
   };
 
-  [Queries.GET_SUBMISSIONS]: {
+  [Tokens.GET_SUBMISSIONS]: {
     judgeId: string;
   };
 }
