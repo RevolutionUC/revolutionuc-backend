@@ -14,7 +14,7 @@ export const databaseDecision = workspace.documentation.addDecision(
   ``
 );
 
-readFile(join(process.cwd(), 'docs', 'database.md'), (err, file) => {
+readFile(join(process.cwd(), 'docs', 'decision-log', 'database.md'), (err, file) => {
   if(err) throw err;
   databaseDecision.content = file.toString();
 });
