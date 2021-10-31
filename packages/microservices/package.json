@@ -8,7 +8,6 @@
     "@nestjs/common": "^8.1.2",
     "@nestjs/core": "^8.1.2",
     "@nestjs/microservices": "^8.1.2",
-    "@revuc/contract": "git+https://github.com/RevolutionUC/service-contract.git",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.4.0"
   },
