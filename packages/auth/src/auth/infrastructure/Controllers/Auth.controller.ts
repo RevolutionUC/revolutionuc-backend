@@ -1,13 +1,25 @@
 import { Controller } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { MessagePattern } from '@nestjs/microservices';
+import { ChangePasswordCommand } from 'src/auth/application/Commands/Impl/change-password';
 import { CheckPermissionCommand } from 'src/auth/application/Commands/Impl/check-permission.command';
 import { CreateUserCommand } from 'src/auth/application/Commands/Impl/create-user.command';
 import { RemoveUserCommand } from 'src/auth/application/Commands/Impl/remove-user.command';
+import {
+  LoginQuery,
+  LoginResult,
+} from 'src/auth/application/Queries/Impl/login.query';
+import {
+  PasswordResetQuery,
+  PasswordResetResult,
+} from 'src/auth/application/Queries/Impl/password-reset.query';
 
 @Controller()
 export class AuthController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @MessagePattern('auth.cmd.create-user')
   async createUser(dto: {
@@ -34,19 +46,32 @@ export class AuthController {
   }
 
   @MessagePattern('auth.cmd.check-permission')
-  async checkPermission(dto: {
-    username: string;
-    password: string;
-    role: string;
-    scope: string;
-  }) {
-    const command = new CheckPermissionCommand(
-      dto.username,
-      dto.password,
-      dto.role,
-      dto.scope,
-    );
+  async checkPermission(dto: { token: string; role: string; scope: string }) {
+    const command = new CheckPermissionCommand(dto.token, dto.role, dto.scope);
 
     return this.commandBus.execute(command);
+  }
+
+  @MessagePattern('auth.cmd.change-password')
+  async changePassword(dto: { token: string; password: string }) {
+    const command = new ChangePasswordCommand(dto.token, dto.password);
+
+    return this.commandBus.execute(command);
+  }
+
+  @MessagePattern('auth.query.login')
+  async login(dto: { username: string; password: string }) {
+    const query = new LoginQuery(dto.username, dto.password);
+
+    return this.queryBus.execute<LoginQuery, LoginResult>(query);
+  }
+
+  @MessagePattern('auth.query.pasword-reset')
+  async passwordReset(dto: { username: string }) {
+    const query = new PasswordResetQuery(dto.username);
+
+    return this.queryBus.execute<PasswordResetQuery, PasswordResetResult>(
+      query,
+    );
   }
 }

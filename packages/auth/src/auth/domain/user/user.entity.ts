@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { hash, compare } from 'bcrypt';
+import { Password } from './password';
 
 @Entity()
 export class User {
@@ -9,13 +9,13 @@ export class User {
     password: string,
     roleId: string,
     scope: string,
-  ): Promise<User> {
+  ) {
     const user = new User();
 
     user.username = username;
+    user.password = await Password.create(password);
     user.role = roleId;
     user.scope = scope;
-    user.password = await hash(password, 10);
 
     return user;
   }
@@ -30,8 +30,13 @@ export class User {
 
   @IsNotEmpty()
   @IsString()
-  @Column()
-  password: string;
+  @Column({
+    transformer: {
+      to: (password: Password) => password.toString(),
+      from: (password: string) => new Password(password),
+    },
+  })
+  password: Password;
 
   @IsNotEmpty()
   @IsString()
@@ -44,11 +49,7 @@ export class User {
   role: string;
 
   async changePassword(newPassword: string) {
-    this.password = await hash(newPassword, 10);
-  }
-
-  comparePassword(attempt: string): Promise<boolean> {
-    return compare(attempt, this.password);
+    this.password = await Password.create(newPassword);
   }
 
   checkPermission(role: string, scope: string): boolean {

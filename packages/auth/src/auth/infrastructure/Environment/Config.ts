@@ -1,9 +1,10 @@
-export type ENV = `DATABASE_URL` | `production` | `PORT`;
+export type ENV = `DATABASE_URL` | `production` | `PORT` | `CRYPTO_KEY`;
 
 const envKeys: { [key in ENV]: ENV } = {
   DATABASE_URL: `DATABASE_URL`,
   production: `production`,
   PORT: `PORT`,
+  CRYPTO_KEY: `CRYPTO_KEY`,
 };
 
 export class ConfigService {
