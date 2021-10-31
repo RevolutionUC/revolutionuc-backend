@@ -1,5 +1,6 @@
 {
   "packages": [
+    "packages/api",
     "packages/auth",
     "packages/contract",
     "packages/judging",
