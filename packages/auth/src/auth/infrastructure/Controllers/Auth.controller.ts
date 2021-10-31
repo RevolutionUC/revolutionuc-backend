@@ -1,18 +1,27 @@
 import { Controller } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { MessagePattern } from '@nestjs/microservices';
-import { ChangePasswordCommand } from 'src/auth/application/Commands/Impl/change-password';
-import { CheckPermissionQuery } from 'src/auth/application/Queries/Impl/check-permission.query';
-import { CreateUserCommand } from 'src/auth/application/Commands/Impl/create-user.command';
-import { RemoveUserCommand } from 'src/auth/application/Commands/Impl/remove-user.command';
+import { Command, Query } from './handlers';
+import {
+  Tokens as Commands,
+  Props as CommandProps,
+} from '@revuc/contract/auth/commands';
+import {
+  Tokens as Queries,
+  Props as QueryProps,
+  Response,
+} from '@revuc/contract/auth/queries';
+import {
+  CreateUserCommand,
+  RemoveUserCommand,
+  ChangePasswordCommand,
+} from 'src/auth/application/Commands/Impl';
 import {
   LoginQuery,
   LoginResult,
-} from 'src/auth/application/Queries/Impl/login.query';
-import {
+  CheckPermissionQuery,
   PasswordResetQuery,
   PasswordResetResult,
-} from 'src/auth/application/Queries/Impl/password-reset.query';
+} from 'src/auth/application/Queries/Impl';
 
 @Controller()
 export class AuthController {
@@ -21,13 +30,8 @@ export class AuthController {
     private readonly queryBus: QueryBus,
   ) {}
 
-  @MessagePattern('auth.cmd.create-user')
-  async createUser(dto: {
-    username: string;
-    password: string;
-    role: string;
-    scope: string;
-  }) {
+  @Command(Commands.CREATE_USER)
+  async createUser(dto: CommandProps[typeof Commands.CREATE_USER]) {
     const command = new CreateUserCommand(
       dto.username,
       dto.password,
@@ -38,36 +42,42 @@ export class AuthController {
     return this.commandBus.execute(command);
   }
 
-  @MessagePattern('auth.cmd.remove-user')
-  async removeUser(dto: { username: string }) {
+  @Command(Commands.REMOVE_USER)
+  async removeUser(dto: CommandProps[typeof Commands.REMOVE_USER]) {
     const command = new RemoveUserCommand(dto.username);
 
     return this.commandBus.execute(command);
   }
 
-  @MessagePattern('auth.cmd.change-password')
-  async changePassword(dto: { token: string; password: string }) {
+  @Command(Commands.CHANGE_PASSWORD)
+  async changePassword(dto: CommandProps[typeof Commands.CHANGE_PASSWORD]) {
     const command = new ChangePasswordCommand(dto.token, dto.password);
 
     return this.commandBus.execute(command);
   }
 
-  @MessagePattern('auth.query.login')
-  async login(dto: { username: string; password: string }) {
+  @Query(Queries.LOGIN)
+  async login(
+    dto: QueryProps[typeof Queries.LOGIN],
+  ): Promise<Response[typeof Queries.LOGIN]> {
     const query = new LoginQuery(dto.username, dto.password);
 
     return this.queryBus.execute<LoginQuery, LoginResult>(query);
   }
 
-  @MessagePattern('auth.query.check-permission')
-  async checkPermission(dto: { token: string; role: string; scope: string }) {
+  @Query(Queries.CHECK_PERMISSION)
+  async checkPermission(
+    dto: QueryProps[typeof Queries.CHECK_PERMISSION],
+  ): Promise<void> {
     const query = new CheckPermissionQuery(dto.token, dto.role, dto.scope);
 
     return this.queryBus.execute<CheckPermissionQuery, void>(query);
   }
 
-  @MessagePattern('auth.query.pasword-reset')
-  async passwordReset(dto: { username: string }) {
+  @Query(Queries.PASWORD_RESET)
+  async passwordReset(
+    dto: QueryProps[typeof Queries.PASWORD_RESET],
+  ): Promise<Response[typeof Queries.PASWORD_RESET]> {
     const query = new PasswordResetQuery(dto.username);
 
     return this.queryBus.execute<PasswordResetQuery, PasswordResetResult>(

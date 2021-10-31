@@ -28,6 +28,8 @@
     "@nestjs/microservices": "^8.1.2",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^8.0.2",
+    "@revuc/contract": "^0.3.0",
+    "@revuc/microservices": "^0.3.0",
     "bcrypt": "^5.0.1",
     "class-validator": "^0.13.1",
     "reflect-metadata": "^0.1.13",
