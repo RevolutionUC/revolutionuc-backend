@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 // import { CqrsModule } from '@nestjs/cqrs';
-import { CheckPermissionHandler } from './Commands/Handlers/check-permission.handler';
-import { CreateUserHandler } from './Commands/Handlers/create-user.handler';
-import { RemoveUserHandler } from './Commands/Handlers/remove-user.handler';
+import { CommandHandlers } from './Commands/Handlers';
+import { QueryHandlers } from './Queries/Handlers';
+
+const Handlers = [...CommandHandlers, ...QueryHandlers];
 
 @Module({
   // imports: [CqrsModule],
-  providers: [CheckPermissionHandler, CreateUserHandler, RemoveUserHandler],
-  exports: [CheckPermissionHandler, CreateUserHandler, RemoveUserHandler],
+  providers: [...Handlers],
+  exports: [...Handlers],
 })
 export class ApplicationModule {}

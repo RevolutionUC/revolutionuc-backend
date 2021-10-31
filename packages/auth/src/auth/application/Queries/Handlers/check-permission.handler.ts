@@ -1,14 +1,14 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/auth/domain/role/role.entity';
 import { User } from 'src/auth/domain/user/user.entity';
 import { AuthenticateService } from 'src/auth/infrastructure/Services/Authenticate.service';
 import { Repository } from 'typeorm';
-import { CheckPermissionCommand } from '../Impl/check-permission.command';
+import { CheckPermissionQuery } from '../Impl/check-permission.query';
 
-@CommandHandler(CheckPermissionCommand)
+@QueryHandler(CheckPermissionQuery)
 export class CheckPermissionHandler
-  implements ICommandHandler<CheckPermissionCommand>
+  implements IQueryHandler<CheckPermissionQuery, void>
 {
   constructor(
     @InjectRepository(User)
@@ -18,8 +18,8 @@ export class CheckPermissionHandler
     private readonly authenticateService: AuthenticateService,
   ) {}
 
-  async execute(command: CheckPermissionCommand) {
-    const { token, role: roleName, scope } = command;
+  async execute(query: CheckPermissionQuery) {
+    const { token, role: roleName, scope } = query;
     const { userId } = await this.authenticateService.validateToken(token);
 
     const role = await this.roleRepository.findOne({
