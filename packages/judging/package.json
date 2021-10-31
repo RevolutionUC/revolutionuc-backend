@@ -25,6 +25,8 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/microservices": "^8.1.2",
     "@nestjs/typeorm": "^8.0.2",
+    "@revuc/contract": "^0.3.0",
+    "@revuc/microservices": "^0.3.0",
     "class-validator": "^0.13.1",
     "csvjson-csv2json": "^5.0.6",
     "dotenv": "^10.0.0",

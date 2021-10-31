@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ATTENDANCE } from '@revuc/contract/tokens/services';
+import { SERVICE_TOKENS } from '@revuc/contract';
 import { Microservice, MicroserviceClient } from '@revuc/microservices/lib';
 
-export const EMAIL_TOKEN = 'email';
-
 @Injectable()
-@Microservice(ATTENDANCE)
+@Microservice(SERVICE_TOKENS.EMAIL)
 export class EmailService extends MicroserviceClient {
   async sendEmail(dto: {
     email: string;

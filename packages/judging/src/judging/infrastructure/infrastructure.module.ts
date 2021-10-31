@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApplicationModule } from '../application/application.module';
 import { Category } from '../domain/category/category.entity';
@@ -11,8 +10,10 @@ import { CommandController } from './Controllers/Command.controller';
 import { QueryController } from './Controllers/Query.controller';
 import { CategoryRepository } from './Repositories/Category.repository';
 import { ProjectRepository } from './Repositories/Project.repository';
-import { AuthService, AUTH_TOKEN } from './Services/Auth.service';
-import { EmailService, EMAIL_TOKEN } from './Services/Email.service';
+import { AuthService } from './Services/Auth.service';
+import { EmailService } from './Services/Email.service';
+import { SERVICE_TOKENS } from '@revuc/contract';
+import { MicroserviceModule } from '@revuc/microservices';
 
 @Module({
   imports: [
@@ -25,9 +26,8 @@ import { EmailService, EMAIL_TOKEN } from './Services/Email.service';
       Judge,
       Group,
     ]),
-    ClientsModule.register([
-      { name: AUTH_TOKEN, transport: Transport.TCP },
-      { name: EMAIL_TOKEN, transport: Transport.TCP },
+    MicroserviceModule.register([
+      SERVICE_TOKENS.AUTH, SERVICE_TOKENS.EMAIL,
     ]),
     ApplicationModule,
   ],

@@ -1,14 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { QueryHandler } from 'src/judging/application/Queries/Query.handler';
-import { SERVICE_TOKENS } from '@revuc/contract';
 import {
   Tokens as Queries,
   Props,
   Response,
 } from '@revuc/contract/judging/queries';
-import { QueryFactory } from '@revuc/microservices/lib';
-
-const Query = QueryFactory(SERVICE_TOKENS.JUDGING);
+import { Query } from './handlers';
 
 @Controller()
 export class QueryController {

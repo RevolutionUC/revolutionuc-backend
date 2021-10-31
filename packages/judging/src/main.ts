@@ -1,25 +1,11 @@
 import { config } from 'dotenv';
 config();
 
-import { NestFactory } from '@nestjs/core';
+import { BootstrapMicroservice } from '@revuc/microservices';
+import { SERVICE_TOKENS } from '@revuc/contract';
 import { AppModule } from './app.module';
-import { ConfigService } from './judging/infrastructure/Environment';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const configService = ConfigService.getInstance();
-
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.TCP,
-      options: {
-        host: `0.0.0.0`,
-        port: parseInt(configService.get(`PORT`)),
-      },
-    },
-  );
-
-  app.listen();
+  await BootstrapMicroservice(SERVICE_TOKENS.JUDGING, AppModule);
 }
 bootstrap();

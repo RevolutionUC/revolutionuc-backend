@@ -1,10 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { CommandHandler } from 'src/judging/application/Commands/Command.handler';
 import { Tokens as Commands, Props } from '@revuc/contract/judging/commands';
-import { SERVICE_TOKENS } from '@revuc/contract';
-import { CommandFactory } from '@revuc/microservices/lib';
-
-const Command = CommandFactory(SERVICE_TOKENS.JUDGING);
+import { Command } from './handlers';
 
 @Controller()
 export class CommandController {

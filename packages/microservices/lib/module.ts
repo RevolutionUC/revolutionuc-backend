@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Module, Logger } from '@nestjs/common';
 import {
   ClientProviderOptions,
   ClientsModule,
@@ -10,6 +10,11 @@ import { Configuration } from './config';
 @Module({})
 export class MicroserviceModule {
   static register(tokens: Array<keyof typeof SERVICE_TOKENS>): DynamicModule {
+    const logger = new Logger('MicroserviceModule');
+    tokens.forEach((token) => {
+      logger.log(`Registering ${token}`);
+    });
+
     return {
       module: MicroserviceModule,
       imports: [

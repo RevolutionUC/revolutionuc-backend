@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ATTENDANCE } from '@revuc/contract/tokens/services';
+import { SERVICE_TOKENS } from '@revuc/contract';
 import { Microservice, MicroserviceClient } from '@revuc/microservices/lib';
 
-export const AUTH_TOKEN = `auth`;
-
 @Injectable()
-@Microservice(ATTENDANCE)
+@Microservice(SERVICE_TOKENS.AUTH)
 export class AuthService extends MicroserviceClient {
   async register(dto: {
     username: string;
