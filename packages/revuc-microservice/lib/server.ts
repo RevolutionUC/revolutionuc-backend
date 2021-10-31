@@ -1,8 +1,10 @@
 import { applyDecorators } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { COMMAND_TOKEN, QUERY_TOKEN } from '@revuc/contract';
-import { Commands } from '@revuc/contract/judging/commands';
-import { Queries } from '@revuc/contract/judging/queries';
+import { CQRS_TOKENS } from '@revuc/contract';
+import { Tokens as Commands } from '@revuc/contract/judging/commands';
+import { Tokens as Queries } from '@revuc/contract/judging/queries';
+
+const { COMMAND_TOKEN, QUERY_TOKEN } = CQRS_TOKENS;
 
 export const CommandFactory =
   (token: string) => (command: keyof typeof Commands) =>
