@@ -1,6 +1,6 @@
 {
   "name": "@revuc/microservices",
-  "version": "1.0.0",
+  "version": "0.3.0",
   "description": "",
   "main": "index.ts",
   "private": "false",
@@ -8,7 +8,7 @@
     "@nestjs/common": "^8.1.2",
     "@nestjs/core": "^8.1.2",
     "@nestjs/microservices": "^8.1.2",
-    "@revuc/contract": "^1.0.0",
+    "@revuc/contract": "^0.3.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.4.0"
   },
