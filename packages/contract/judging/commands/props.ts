@@ -11,8 +11,8 @@ export interface Props {
 
   [Tokens.CREATE_CATEGORY]: {
     name: string;
-    groupCount: number;
     groupsPerSubmission: number;
+    judgesPerGroup: number;
     mandatory?: boolean;
   };
 

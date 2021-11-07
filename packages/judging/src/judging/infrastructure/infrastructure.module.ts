@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SERVICE_TOKENS } from '@revuc/contract';
+import { MicroserviceModule } from '@revuc/microservices';
 import { ApplicationModule } from '../application/application.module';
-import { Category } from '../domain/category/category.entity';
-import { Group } from '../domain/group/group.entity';
 import { Judge } from '../domain/entities/judge/judge.entity';
 import { Submission } from '../domain/entities/submission/submission.entity';
 import { Project } from '../domain/entities/project/project.entity';
@@ -12,8 +12,8 @@ import { CategoryRepository } from './Repositories/Category.repository';
 import { ProjectRepository } from './Repositories/Project.repository';
 import { AuthService } from './Services/Auth.service';
 import { EmailService } from './Services/Email.service';
-import { SERVICE_TOKENS } from '@revuc/contract';
-import { MicroserviceModule } from '@revuc/microservices';
+import { Category } from '../domain/entities/category/category.entity';
+import { Group } from '../domain/entities/group/group.entity';
 
 @Module({
   imports: [
