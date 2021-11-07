@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from 'src/judging/infrastructure/Environment';
 import { AuthService } from 'src/judging/infrastructure/Services/Auth.service';
-import { In, Repository } from 'typeorm';
+import { Connection, In, Repository } from 'typeorm';
 import { Category } from '../../domain/entities/category/category.entity';
 import { Group } from '../../domain/entities/group/group.entity';
 import { Judge } from '../../domain/entities/judge/judge.entity';
@@ -30,6 +30,7 @@ export class CommandHandler {
     private readonly submissionRepository: Repository<Submission>,
     @InjectRepository(Group)
     private readonly groupRepository: Repository<Group>,
+    private connection: Connection,
 
     private readonly authService: AuthService,
 
@@ -53,8 +54,10 @@ export class CommandHandler {
     const projects = data.map((projectData) => projectData.project);
     const submissions = data.flatMap((projectData) => projectData.submissions);
 
-    await this.projectRepository.save(projects);
-    await this.submissionRepository.save(submissions);
+    this.connection.transaction(async (manager) => {
+      await manager.save(projects);
+      await manager.save(submissions);
+    });
   }
 
   async createCategory(categoryData: CategoryDto): Promise<void> {
@@ -152,10 +155,12 @@ export class CommandHandler {
     const [groups, updatedCategories, updatedSubmissions, updatedJudges] =
       this.assignmentService.createGroups(categories, submissions, judges);
 
-    await this.categoryRepository.save(updatedCategories);
-    await this.submissionRepository.save(updatedSubmissions);
-    await this.judgeRepository.save(updatedJudges);
-    await this.groupRepository.save(groups);
+    this.connection.transaction(async (manager) => {
+      await manager.save(groups);
+      await manager.save(updatedCategories);
+      await manager.save(updatedSubmissions);
+      await manager.save(updatedJudges);
+    });
   }
 
   async scoreSubmissions(): Promise<void> {
