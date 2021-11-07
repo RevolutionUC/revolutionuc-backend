@@ -1,13 +1,13 @@
-import { assets, Infrastructure, Services } from '.';
+import { Infrastructure, Services } from '.';
 
-const { api, emails, processQueue, emailQueue } = Infrastructure;
+const { api, emails, assets, eventQueue, emailQueue } = Infrastructure;
 
 Object.entries(Services).forEach(([name, { service }]) => {
   if (name === `authMS`) {
     api.uses(service, `authorizes requests using`, `TCP`);
   } else {
     api.uses(service, `sends commands and queries`, `TCP`);
-    service.uses(processQueue, `emits and listens to events`, `AMQP`);
+    service.uses(eventQueue, `emits and listens to events`, `AMQP`);
     service.uses(emailQueue, `sends commands`, `AMQP`);
   }
 });

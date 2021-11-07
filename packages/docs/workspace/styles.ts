@@ -1,6 +1,6 @@
 import { ElementStyle, Tags, Shape } from 'structurizr-typescript';
 import {
-  processQueue,
+  eventQueue,
   emailQueue,
   api,
   emails,
@@ -114,7 +114,7 @@ stats.tags.add(MyTags.webapp);
 lattice.tags.add(MyTags.mobileapp);
 assets.tags.add(MyTags.folder);
 revvit.tags.add(MyTags.bot);
-processQueue.tags.add(MyTags.queue);
+eventQueue.tags.add(MyTags.queue);
 emailQueue.tags.add(MyTags.queue);
 
 Object.values(Services).forEach(({ service, database }) => {
