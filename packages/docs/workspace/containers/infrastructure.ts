@@ -24,8 +24,14 @@ export const assets = system.addContainer(
   'AWS S3',
 )!;
 
-export const queue = system.addContainer(
-  'Message Queue',
-  'Queue to transport event messages',
+export const processQueue = system.addContainer(
+  'Event Queue',
+  'Queue to transport domain event messages',
+  'RabbitMQ',
+)!;
+
+export const emailQueue = system.addContainer(
+  'Email Queue',
+  'Queue to transport email command messages',
   'RabbitMQ',
 )!;

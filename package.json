@@ -8,6 +8,7 @@
     "majestic:judging": "lerna exec --scope=@revuc/judging -- majestic",
     "test:judging": "lerna exec --scope=@revuc/judging -- npm run test",
     "lint:judging": "lerna exec --scope=@revuc/judging -- npm run lint",
-    "lint:docs": "lerna exec --scope=@revuc/docs -- npm run lint"
+    "lint:docs": "lerna exec --scope=@revuc/docs -- npm run lint",
+    "start:docs": "lerna exec --scope=@revuc/docs -- npm run start"
   }
 }

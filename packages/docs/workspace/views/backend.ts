@@ -1,7 +1,6 @@
 import { workspace } from '../workspace';
 import { Services, Infrastructure } from '../containers';
 import { system } from '../systems';
-import { organizer } from '../persons';
 
 export const backendView = workspace.views.createContainerView(
   system,
@@ -14,5 +13,4 @@ Object.values(Services).forEach((s) => {
 Object.values(Infrastructure).forEach((infra) =>
   backendView.addContainer(infra),
 );
-backendView.addPerson(organizer);
 backendView.setAutomaticLayout(true);
