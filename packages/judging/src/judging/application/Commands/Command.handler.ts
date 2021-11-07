@@ -4,7 +4,6 @@ import { ConfigService } from 'src/judging/infrastructure/Environment';
 import { AuthService } from 'src/judging/infrastructure/Services/Auth.service';
 import { Connection, In, Repository } from 'typeorm';
 import { Category } from '../../domain/entities/category/category.entity';
-import { Group } from '../../domain/entities/group/group.entity';
 import { Judge } from '../../domain/entities/judge/judge.entity';
 import { Project } from '../../domain/entities/project/project.entity';
 import { Submission } from '../../domain/entities/submission/submission.entity';
@@ -20,6 +19,8 @@ export class CommandHandler {
   constructor(
     private readonly configService: ConfigService,
 
+    // persistence
+    private connection: Connection,
     @InjectRepository(Project)
     private readonly projectRepository: Repository<Project>,
     @InjectRepository(Category)
@@ -28,12 +29,11 @@ export class CommandHandler {
     private readonly judgeRepository: Repository<Judge>,
     @InjectRepository(Submission)
     private readonly submissionRepository: Repository<Submission>,
-    @InjectRepository(Group)
-    private readonly groupRepository: Repository<Group>,
-    private connection: Connection,
 
+    // external services
     private readonly authService: AuthService,
 
+    // domain services
     private readonly submissionService: SubmissionService,
     private readonly assignmentService: AssignmentService,
     private readonly scoringService: ScoringService,
