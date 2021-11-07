@@ -14,21 +14,20 @@ export async function BootstrapMicroservice(
 ) {
   logger.log(`Bootstrapping ${token} and ${queue}`);
 
-  const serviceConfig = Configuration[token];
+  const serviceConfig = Configuration[token].tcp;
   const queueConfig = Configuration[queue];
 
   const app = await NestFactory.create(module);
 
-  BootstrapToTcp(token, app);
-
-  BootstrapToQueue(queue, app);
+  await BootstrapToTcp(app, serviceConfig);
+  await BootstrapToQueue(app, queueConfig);
 
   await app.startAllMicroservices();
-  await app.listen(serviceConfig.tcp.port);
+  await app.listen(serviceConfig.port);
 
   logger.log(
     `Microservice ${token} is listening on TCP port ` +
-      `${serviceConfig.tcp.host}:${serviceConfig.tcp.port} ` +
+      `${serviceConfig.host}:${serviceConfig.port} ` +
       `and consuming from RMQ queue ${queueConfig.queue}`,
   );
 }
