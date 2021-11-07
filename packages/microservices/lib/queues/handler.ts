@@ -3,7 +3,7 @@ import { MessagePattern, Transport } from '@nestjs/microservices';
 
 const logger = new Logger(`Event handler`);
 
-export function Subscribe<E = string>(event: E) {
+export function Event<E = string>(event: E) {
   logger.log(`Subscribing to event ${event}`);
 
   return applyDecorators(MessagePattern(event, Transport.RMQ));

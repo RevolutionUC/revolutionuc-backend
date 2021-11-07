@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConfigService } from 'src/judging/infrastructure/Environment';
-import { AuthService } from 'src/judging/infrastructure/Services/Auth.service';
 import { Connection, In, Repository } from 'typeorm';
 import { Category } from '../../domain/entities/category/category.entity';
 import { Judge } from '../../domain/entities/judge/judge.entity';
@@ -16,12 +14,11 @@ import { SubmissionService } from '../../domain/services/submission.service';
 import { CategoryDto } from '../dtos/category.dto';
 import { JudgeDto } from '../dtos/judge.dto';
 import { ProjectDto } from '../dtos/project.dto';
+import { EventEmitter } from '../Events/Event.emitter';
 
 @Injectable()
 export class CommandHandler {
   constructor(
-    private readonly configService: ConfigService,
-
     // persistence
     private connection: Connection,
     @InjectRepository(Project)
@@ -33,8 +30,8 @@ export class CommandHandler {
     @InjectRepository(Submission)
     private readonly submissionRepository: Repository<Submission>,
 
-    // external services
-    private readonly authService: AuthService,
+    // events
+    private readonly eventEmitter: EventEmitter,
 
     // domain services
     private readonly submissionService: SubmissionService,
@@ -79,7 +76,6 @@ export class CommandHandler {
   }
 
   async registerJudge(dto: JudgeDto): Promise<void> {
-    const JUDGE_PASSWORD = this.configService.get(`JUDGE_PASSWORD`);
     const category = await this.categoryRepository.findOne(dto.category);
 
     if (!category) {
@@ -92,12 +88,7 @@ export class CommandHandler {
 
     const savedJudge = await this.judgeRepository.save(judge);
 
-    await this.authService.register({
-      username: dto.email,
-      password: JUDGE_PASSWORD,
-      role: `JUDGE`,
-      scope: savedJudge.id,
-    });
+    await this.eventEmitter.createUserForJudge(savedJudge);
   }
 
   async removeJudge(judgeId: string): Promise<void> {
@@ -109,7 +100,7 @@ export class CommandHandler {
 
     await this.judgeRepository.delete(judgeId);
 
-    await this.authService.unregister({ username: judge.email });
+    await this.eventEmitter.removeUserForJudge(judge);
   }
 
   async reassignJudge(judgeId: string, newCategoryId: string): Promise<void> {

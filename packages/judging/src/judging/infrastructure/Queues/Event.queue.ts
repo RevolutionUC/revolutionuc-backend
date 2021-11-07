@@ -5,7 +5,7 @@ import { Queue, QueueClient } from '@revuc/microservices/lib';
 
 @Injectable()
 @Queue(QUEUE_TOKENS.EVENT_QUEUE)
-export class EventService extends QueueClient {
+export class EventClient extends QueueClient {
   emitEvent<E extends keyof typeof EVENTS>(email: E, data: Payloads[E]) {
     return this.send(email, data);
   }

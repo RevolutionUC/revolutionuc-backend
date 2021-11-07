@@ -5,8 +5,8 @@ import { QueueModule } from '@revuc/microservices';
 import { ApplicationModule } from '../application/application.module';
 import { CommandController } from './Controllers/Command.controller';
 import { QueryController } from './Controllers/Query.controller';
-import { EventService } from './Queues/Event.queue';
-import { EmailService } from './Queues/Email.queue';
+import { EventClient } from './Queues/Event.queue';
+import { EmailClient } from './Queues/Email.queue';
 import { Category } from '../domain/entities/category/category.entity';
 import { Group } from '../domain/entities/group/group.entity';
 import { Judge } from '../domain/entities/judge/judge.entity';
@@ -20,6 +20,6 @@ import { Project } from '../domain/entities/project/project.entity';
     ApplicationModule,
   ],
   controllers: [CommandController, QueryController],
-  providers: [EventService, EmailService],
+  providers: [EventClient, EmailClient],
 })
 export class InfrastructureModule {}

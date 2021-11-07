@@ -1,3 +1,3 @@
-export class RemoveUserCommand {
+export class UserRemovedEvent {
   constructor(public readonly username: string) {}
 }

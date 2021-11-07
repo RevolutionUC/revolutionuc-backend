@@ -1,4 +1,4 @@
-export class CreateUserCommand {
+export class UserCreatedEvent {
   constructor(
     public readonly username: string,
     public readonly password: string,

@@ -5,8 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApplicationModule } from '../application/application.module';
 import { Role } from '../domain/role/role.entity';
 import { User } from '../domain/user/user.entity';
-import { AuthController } from './Controllers/Auth.controller';
-import { ConfigProvider, ConfigService } from './Environment/Config';
+import {
+  CommandController,
+  QueryController,
+  EventController,
+} from './Controllers';
+import { ConfigProvider, ConfigService } from './Environment';
 
 @Module({
   imports: [
@@ -33,6 +37,6 @@ import { ConfigProvider, ConfigService } from './Environment/Config';
     CqrsModule,
     ApplicationModule,
   ],
-  controllers: [AuthController],
+  controllers: [CommandController, QueryController, EventController],
 })
 export class InfrastructureModule {}

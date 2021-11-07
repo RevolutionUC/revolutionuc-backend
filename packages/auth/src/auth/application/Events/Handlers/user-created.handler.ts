@@ -1,12 +1,12 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/auth/domain/role/role.entity';
 import { User } from 'src/auth/domain/user/user.entity';
 import { Repository } from 'typeorm';
-import { CreateUserCommand } from '../Impl/create-user.command';
+import { UserCreatedEvent } from '../Impl';
 
-@CommandHandler(CreateUserCommand)
-export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
+@EventsHandler(UserCreatedEvent)
+export class CreateUserHandler implements IEventHandler<UserCreatedEvent> {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -14,8 +14,8 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
     private readonly roleRepository: Repository<Role>,
   ) {}
 
-  async execute(command: CreateUserCommand) {
-    const { username, password, role: roleName, scope } = command;
+  async handle(event: UserCreatedEvent) {
+    const { username, password, role: roleName, scope } = event;
 
     const existingUser = await this.userRepository.findOne({
       where: { username },
