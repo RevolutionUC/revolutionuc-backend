@@ -1,5 +1,4 @@
-export * from './client';
-export * from './handler';
-export * from './module';
+export * from './queues';
+export * from './services';
 export * from './config';
 export * from './server';

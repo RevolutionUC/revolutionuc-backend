@@ -5,7 +5,7 @@ import {
   Transport,
 } from '@nestjs/microservices';
 import { SERVICE_TOKENS } from '@revuc/contract';
-import { Configuration } from './config';
+import { Configuration } from '../config';
 
 @Module({})
 export class MicroserviceModule {
@@ -22,10 +22,7 @@ export class MicroserviceModule {
           tokens.map<ClientProviderOptions>((token) => ({
             name: token,
             transport: Transport.TCP,
-            options: {
-              host: Configuration[token].host,
-              port: Configuration[token].port,
-            },
+            options: Configuration[token].tcp,
           })),
         ),
       ],

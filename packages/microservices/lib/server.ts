@@ -1,42 +1,34 @@
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { NestFactory } from '@nestjs/core';
 import { Type, Logger } from '@nestjs/common';
-import { SERVICE_TOKENS } from '@revuc/contract';
+import { SERVICE_TOKENS, QUEUE_TOKENS } from '@revuc/contract';
 import { Configuration } from './config';
+import { BootstrapToTcp } from './services';
+import { BootstrapToQueue } from '.';
 
 const logger = new Logger('Microservice Bootstrap');
 
 export async function BootstrapMicroservice(
   token: keyof typeof SERVICE_TOKENS,
+  queue: keyof typeof QUEUE_TOKENS,
   module: Type<any>,
 ) {
-  logger.log(`Bootstrapping ${token}`);
+  logger.log(`Bootstrapping ${token} and ${queue}`);
+
+  const serviceConfig = Configuration[token];
+  const queueConfig = Configuration[queue];
 
   const app = await NestFactory.create(module);
 
-  const tcpService = app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.TCP,
-    options: {
-      host: Configuration[token].host,
-      port: Configuration[token].port,
-    },
-  });
+  BootstrapToTcp(token, app);
 
-  const rmqService = app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: ['amqp://localhost:5672'],
-      queue: 'cats_queue',
-      queueOptions: {
-        durable: false,
-      },
-    },
-  });
+  BootstrapToQueue(queue, app);
 
   await app.startAllMicroservices();
-  await app.listen(Configuration[token].port);
+  await app.listen(serviceConfig.tcp.port);
 
   logger.log(
-    `Microservice ${token} is listening on ${Configuration[token].host}:${Configuration[token].port}`,
+    `Microservice ${token} is listening on TCP port ` +
+      `${serviceConfig.tcp.host}:${serviceConfig.tcp.port} ` +
+      `and consuming from RMQ queue ${queueConfig.queue}`,
   );
 }
