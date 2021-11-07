@@ -12,18 +12,29 @@ export async function BootstrapMicroservice(
 ) {
   logger.log(`Bootstrapping ${token}`);
 
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    module,
-    {
-      transport: Transport.TCP,
-      options: {
-        host: Configuration[token].host,
-        port: Configuration[token].port,
+  const app = await NestFactory.create(module);
+
+  const tcpService = app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.TCP,
+    options: {
+      host: Configuration[token].host,
+      port: Configuration[token].port,
+    },
+  });
+
+  const rmqService = app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://localhost:5672'],
+      queue: 'cats_queue',
+      queueOptions: {
+        durable: false,
       },
     },
-  );
+  });
 
-  await app.listen();
+  await app.startAllMicroservices();
+  await app.listen(Configuration[token].port);
 
   logger.log(
     `Microservice ${token} is listening on ${Configuration[token].host}:${Configuration[token].port}`,
