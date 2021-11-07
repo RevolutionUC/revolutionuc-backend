@@ -5,16 +5,22 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "start": "ts-node index.ts"
-  },
+    "start": "ts-node index.ts",
+    "lint": "eslint \"workspace/**/*.ts\" --fix"
+    },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@nestjs/testing": "^8.1.2",
     "@tsconfig/node14": "^1.0.1",
     "@types/node": "^11.13.2",
     "ts-node": "^10.4.0",
-    "typescript": "3.7.3"
+    "typescript": "3.7.3",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.3.2"
   },
   "dependencies": {
     "dotenv": "^8.2.0",

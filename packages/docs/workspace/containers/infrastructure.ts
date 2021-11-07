@@ -1,9 +1,9 @@
-import { system } from "../systems"; 
+import { system } from '../systems';
 
 export const api = system.addContainer(
   'API Gateway',
   'API interface layer to authenticate and route requests to the appropriate microservice',
-  'NestJS'
+  'NestJS',
 )!;
 
 // export const database = system.addContainer(
@@ -15,17 +15,17 @@ export const api = system.addContainer(
 export const emails = system.addContainer(
   'Email Server',
   'Stores and sends emails designed using templates',
-  'Nunjucks, Gulp, Mailgun and Heroku'
+  'Nunjucks, Gulp, Mailgun and Heroku',
 )!;
 
 export const assets = system.addContainer(
   'Assets',
   'S3 bucket to store important files',
-  'AWS S3'
+  'AWS S3',
 )!;
 
 export const queue = system.addContainer(
   'Message Queue',
-  'Queue to transport command and event messages',
-  'RabbitMQ'
+  'Queue to transport event messages',
+  'RabbitMQ',
 )!;
