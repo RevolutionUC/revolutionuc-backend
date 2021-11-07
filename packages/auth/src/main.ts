@@ -6,6 +6,6 @@ import { SERVICE_TOKENS } from '@revuc/contract';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  await BootstrapMicroservice(SERVICE_TOKENS.AUTH, AppModule);
+  await BootstrapMicroservice(AppModule, SERVICE_TOKENS.AUTH);
 }
 bootstrap();

@@ -8,19 +8,23 @@ import { BootstrapToQueue } from '.';
 const logger = new Logger('Microservice Bootstrap');
 
 export async function BootstrapMicroservice(
-  token: keyof typeof SERVICE_TOKENS,
-  queue: keyof typeof QUEUE_TOKENS,
   module: Type<any>,
+  token: keyof typeof SERVICE_TOKENS,
+  queue?: keyof typeof QUEUE_TOKENS,
 ) {
-  logger.log(`Bootstrapping ${token} and ${queue}`);
+  logger.log(`Bootstrapping ${token}${queue ? `and ${queue}` : ``}`);
 
   const serviceConfig = Configuration[token].tcp;
-  const queueConfig = Configuration[queue];
+  let queueConfig;
 
   const app = await NestFactory.create(module);
 
   await BootstrapToTcp(app, serviceConfig);
-  await BootstrapToQueue(app, queueConfig);
+
+  if (queue) {
+    queueConfig = Configuration[queue];
+    await BootstrapToQueue(app, queueConfig);
+  }
 
   await app.startAllMicroservices();
   await app.listen(serviceConfig.port);
@@ -28,6 +32,8 @@ export async function BootstrapMicroservice(
   logger.log(
     `Microservice ${token} is listening on TCP port ` +
       `${serviceConfig.host}:${serviceConfig.port} ` +
-      `and consuming from RMQ queue ${queueConfig.queue}`,
+      queueConfig
+      ? `and consuming from RMQ queue ${queueConfig.queue}`
+      : ``,
   );
 }
