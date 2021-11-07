@@ -97,6 +97,10 @@ export class Judge {
   }
 
   rankSubmissions(submissions: Submission[]) {
+    if (this.isFinal) {
+      throw new Error('Judge has already finalized ranking');
+    }
+
     this.rankings = submissions.map((submission) => {
       if (!submission.groups?.includes(this.groupId)) {
         throw new Error(`Submission must be in judge's group`);

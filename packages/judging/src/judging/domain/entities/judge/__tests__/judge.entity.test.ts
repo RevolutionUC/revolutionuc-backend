@@ -97,6 +97,16 @@ describe(`Judge`, () => {
 
       expect(() => judge.rankSubmissions(submissions)).toThrow();
     });
+
+    it(`throws error if judge has finalized ranking`, () => {
+      const [judge, submissions] = getJudgeWithSubmissions(
+        faker.datatype.number(10),
+      );
+
+      judge.finalizeRanking();
+
+      expect(() => judge.rankSubmissions(submissions)).toThrow();
+    });
   });
 
   describe(`finalizeRanking`, () => {

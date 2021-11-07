@@ -7,12 +7,15 @@ import { Category } from '../../domain/entities/category/category.entity';
 import { Judge } from '../../domain/entities/judge/judge.entity';
 import { Project } from '../../domain/entities/project/project.entity';
 import { Submission } from '../../domain/entities/submission/submission.entity';
-import { AssignmentService, ScoringService } from '../../domain/services';
+import {
+  AssignmentService,
+  RankingService,
+  ScoringService,
+} from '../../domain/services';
 import { SubmissionService } from '../../domain/services/submission.service';
 import { CategoryDto } from '../dtos/category.dto';
 import { JudgeDto } from '../dtos/judge.dto';
 import { ProjectDto } from '../dtos/project.dto';
-import { RankingGuard } from './Ranking.guard';
 
 @Injectable()
 export class CommandHandler {
@@ -37,6 +40,7 @@ export class CommandHandler {
     private readonly submissionService: SubmissionService,
     private readonly assignmentService: AssignmentService,
     private readonly scoringService: ScoringService,
+    private readonly rankingService: RankingService,
   ) {}
 
   async submitProjects(projectsData: Array<ProjectDto>): Promise<void> {
@@ -206,15 +210,14 @@ export class CommandHandler {
       where: { id: In(submissions.map((submission) => submission.projectId)) },
     });
 
-    RankingGuard(
+    this.rankingService.finalizeJudgeRanking(judge, submissions, projects);
+
+    const updatedJudge = this.rankingService.finalizeJudgeRanking(
       judge,
       submissions,
       projects,
-      ScoringService.RANK_TO_SCORE.length,
     );
 
-    judge.finalizeRanking();
-
-    await this.judgeRepository.save(judge);
+    await this.judgeRepository.save(updatedJudge);
   }
 }
