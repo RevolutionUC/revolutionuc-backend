@@ -9,16 +9,20 @@ import {
   AssignmentService,
   RankingService,
   ScoringService,
+  SubmissionService,
 } from '../../domain/services';
-import { SubmissionService } from '../../domain/services/submission.service';
+import { ConfigService } from '../../infrastructure/Environment';
+import { EmailClient } from '../../infrastructure/Queues/Email.queue';
+import { EventClient } from '../../infrastructure/Queues/Event.queue';
 import { CategoryDto } from '../dtos/category.dto';
 import { JudgeDto } from '../dtos/judge.dto';
 import { ProjectDto } from '../dtos/project.dto';
-import { EventEmitter } from '../Events/Event.emitter';
 
 @Injectable()
 export class CommandHandler {
   constructor(
+    private readonly configService: ConfigService,
+
     // persistence
     private connection: Connection,
     @InjectRepository(Project)
@@ -30,8 +34,9 @@ export class CommandHandler {
     @InjectRepository(Submission)
     private readonly submissionRepository: Repository<Submission>,
 
-    // events
-    private readonly eventEmitter: EventEmitter,
+    // queues
+    private readonly eventClient: EventClient,
+    private readonly emailClient: EmailClient,
 
     // domain services
     private readonly submissionService: SubmissionService,
@@ -88,7 +93,12 @@ export class CommandHandler {
 
     const savedJudge = await this.judgeRepository.save(judge);
 
-    await this.eventEmitter.createUserForJudge(savedJudge);
+    await this.eventClient.emitEvent(`USER_CREATED`, {
+      username: savedJudge.email,
+      password: this.configService.get(`JUDGE_PASSWORD`),
+      role: `JUDGE`,
+      scope: savedJudge.id,
+    });
   }
 
   async removeJudge(judgeId: string): Promise<void> {
@@ -100,7 +110,9 @@ export class CommandHandler {
 
     await this.judgeRepository.delete(judgeId);
 
-    await this.eventEmitter.removeUserForJudge(judge);
+    await this.eventClient.emitEvent(`USER_REMOVED`, {
+      username: judge.email,
+    });
   }
 
   async reassignJudge(judgeId: string, newCategoryId: string): Promise<void> {
