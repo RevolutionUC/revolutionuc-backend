@@ -1,4 +1,4 @@
-import { Project } from 'src/judging/domain/project/project.entity';
+import { Project } from 'src/judging/domain/entities/project/project.entity';
 import { EntityRepository, AbstractRepository } from 'typeorm';
 
 @EntityRepository(Project)

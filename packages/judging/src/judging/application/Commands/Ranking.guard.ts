@@ -1,6 +1,6 @@
-import { Judge } from 'src/judging/domain/category/judge.entity';
-import { Submission } from 'src/judging/domain/category/submission.entity';
-import { Project } from 'src/judging/domain/project/project.entity';
+import { Judge } from 'src/judging/domain/entities/judge/judge.entity';
+import { Submission } from 'src/judging/domain/entities/submission/submission.entity';
+import { Project } from 'src/judging/domain/entities/project/project.entity';
 
 const RankingTooLongGuard = (judge: Judge, limit: number) => {
   if (judge.rankings.length > limit) {

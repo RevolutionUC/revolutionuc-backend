@@ -1,20 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { Category } from '../category/category.entity';
-import { Project } from '../project/project.entity';
+import { ProjectDto } from 'src/judging/application/dtos/project.dto';
+import { Category } from '../entities/category/category.entity';
+import { Project } from '../entities/project/project.entity';
+import { Submission } from '../entities/submission/submission.entity';
 
 @Injectable()
 export class SubmissionService {
-  submitToMandatoryCategories(project: Project, allCategories: Category[]) {
-    const mandatoryCategories = allCategories.filter(
+  private submitToCategories(
+    project: Project,
+    categories: Category[],
+  ): Submission[] {
+    return categories.map((category) => Submission.create(category, project));
+  }
+
+  submitProject(
+    projectDto: ProjectDto,
+    categories: Category[],
+  ): [Project, Submission[]] {
+    const mandatoryCategories = categories.filter(
       (category) => category.mandatory,
     );
 
-    mandatoryCategories.forEach((category) => category.submitProject(project));
-  }
+    const optInCategories = categories.filter(
+      (category) =>
+        !category.mandatory && projectDto.categories.includes(category.name),
+    );
 
-  submitToOptionalCategories(project: Project, optInCategories: Category[]) {
-    optInCategories.forEach((category) => {
-      category.submitProject(project);
-    });
+    const project = Project.create(projectDto);
+
+    const submissions = [
+      ...this.submitToCategories(project, optInCategories),
+      ...this.submitToCategories(project, mandatoryCategories),
+    ];
+
+    return [project, submissions];
   }
 }

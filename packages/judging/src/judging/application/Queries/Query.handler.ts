@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager, MoreThan } from 'typeorm';
 import { Category } from '../../domain/category/category.entity';
-import { Group } from '../../domain/category/group.entity';
-import { Judge } from '../../domain/category/judge.entity';
-import { Submission } from '../../domain/category/submission.entity';
-import { Project } from '../../domain/project/project.entity';
+import { Group } from '../../domain/group/group.entity';
+import { Judge } from '../../domain/entities/judge/judge.entity';
+import { Submission } from '../../domain/entities/submission/submission.entity';
+import { Project } from '../../domain/entities/project/project.entity';
 
 @Injectable()
 export class QueryHandler {

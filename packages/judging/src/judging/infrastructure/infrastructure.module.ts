@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApplicationModule } from '../application/application.module';
 import { Category } from '../domain/category/category.entity';
-import { Group } from '../domain/category/group.entity';
-import { Judge } from '../domain/category/judge.entity';
-import { Submission } from '../domain/category/submission.entity';
-import { Project } from '../domain/project/project.entity';
+import { Group } from '../domain/group/group.entity';
+import { Judge } from '../domain/entities/judge/judge.entity';
+import { Submission } from '../domain/entities/submission/submission.entity';
+import { Project } from '../domain/entities/project/project.entity';
 import { CommandController } from './Controllers/Command.controller';
 import { QueryController } from './Controllers/Query.controller';
 import { CategoryRepository } from './Repositories/Category.repository';
@@ -26,9 +26,7 @@ import { MicroserviceModule } from '@revuc/microservices';
       Judge,
       Group,
     ]),
-    MicroserviceModule.register([
-      SERVICE_TOKENS.AUTH, SERVICE_TOKENS.EMAIL,
-    ]),
+    MicroserviceModule.register([SERVICE_TOKENS.AUTH, SERVICE_TOKENS.EMAIL]),
     ApplicationModule,
   ],
   controllers: [CommandController, QueryController],

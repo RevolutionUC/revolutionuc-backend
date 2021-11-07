@@ -1,6 +1,6 @@
 import { Category } from '../../domain/category/category.entity';
-import { Judge } from '../../domain/category/judge.entity';
-import { Submission } from '../../domain/category/submission.entity';
+import { Judge } from '../../domain/entities/judge/judge.entity';
+import { Submission } from '../../domain/entities/submission/submission.entity';
 
 export class GroupDto {
   name: string;

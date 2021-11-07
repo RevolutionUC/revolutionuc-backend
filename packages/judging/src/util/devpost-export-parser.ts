@@ -32,7 +32,7 @@ export const devpostParser = (csv: string, config: DevpostExportConfig) => {
         `project "${title}" does not exist, creating now with category ${category}`,
       );
 
-      let submitter: string;
+      let submitter = ``;
       const team: string[] = [];
 
       for (let i = 0; i < 4; i++) {

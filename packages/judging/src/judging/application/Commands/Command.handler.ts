@@ -5,10 +5,10 @@ import { CategoryRepository } from 'src/judging/infrastructure/Repositories/Cate
 import { ProjectRepository } from 'src/judging/infrastructure/Repositories/Project.repository';
 import { AuthService } from 'src/judging/infrastructure/Services/Auth.service';
 import { EmailService } from 'src/judging/infrastructure/Services/Email.service';
-import { devpostParser } from 'src/util';
+import { devpostParser } from '../../../util';
 import { Category } from '../../domain/category/category.entity';
-import { Judge } from '../../domain/category/judge.entity';
-import { Project } from '../../domain/project/project.entity';
+import { Judge } from '../../domain/entities/judge/judge.entity';
+import { Project } from '../../domain/entities/project/project.entity';
 import { SubmissionService } from '../../domain/services/submission.service';
 import { CategoryDto } from '../dtos/category.dto';
 import { JudgeDto } from '../dtos/judge.dto';

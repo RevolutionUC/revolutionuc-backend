@@ -3,5 +3,10 @@
   "private": true,
   "devDependencies": {
     "lerna": "^4.0.0"
+  },
+  "scripts": {
+    "majestic:judging": "lerna exec --scope=@revuc/judging -- majestic",
+    "test:judging": "lerna exec --scope=@revuc/judging -- npm run test",
+    "lint:judging": "lerna exec --scope=@revuc/judging -- npm run lint"
   }
 }

@@ -1,6 +1,6 @@
 export class CategoryDto {
   name: string;
-  groupCount: number;
   groupsPerSubmission: number;
+  judgesPerGroup: number;
   mandatory?: boolean;
 }
