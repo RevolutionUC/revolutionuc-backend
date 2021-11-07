@@ -29,6 +29,7 @@ export class Judge {
     judge.id = uuid() as JudgeId;
     judge.name = name;
     judge.email = email;
+    judge.isFinal = false;
 
     return judge;
   }
@@ -106,7 +107,6 @@ export class Judge {
   }
 
   finalizeRanking() {
-    // check ranking length
     this.isFinal = true;
   }
 }

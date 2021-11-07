@@ -23,13 +23,11 @@ export interface Props {
   };
 
   [Tokens.REMOVE_JUDGE]: {
-    categoryId: string;
     judgeId: string;
   };
 
   [Tokens.REASSIGN_JUDGE]: {
     judgeId: string;
-    formCategoryId: string;
     toCategoryId: string;
   };
 

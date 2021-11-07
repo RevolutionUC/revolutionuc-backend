@@ -30,22 +30,14 @@ export class CommandController {
 
   @Command(Commands.REMOVE_JUDGE)
   async removeJudge(dto: Props[typeof Commands.REMOVE_JUDGE]): Promise<void> {
-    return this.handler.removeJudge(dto.categoryId, dto.judgeId);
+    return this.handler.removeJudge(dto.judgeId);
   }
 
   @Command(Commands.REASSIGN_JUDGE)
   async reassignJudge(
     dto: Props[typeof Commands.REASSIGN_JUDGE],
   ): Promise<void> {
-    return this.handler.reassignJudge(
-      dto.judgeId,
-      dto.formCategoryId,
-      dto.toCategoryId,
-    );
-  }
-
-  async uploadDevpostCsv(file: Express.Multer.File): Promise<void> {
-    return this.handler.uploadDevpostCsv(file);
+    return this.handler.reassignJudge(dto.judgeId, dto.toCategoryId);
   }
 
   @Command(Commands.DISQUALIFY_PROJECT)

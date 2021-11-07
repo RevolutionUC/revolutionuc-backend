@@ -55,7 +55,7 @@ export class QueryController {
   async getSubmissions(
     dto: Props[typeof Queries.GET_SUBMISSIONS],
   ): Promise<Response[typeof Queries.GET_SUBMISSIONS]> {
-    const submissions = await this.handler.getSubmissions(dto.judgeId);
+    const submissions = await this.handler.submissionsForJudge(dto.judgeId);
     return { submissions };
   }
 }

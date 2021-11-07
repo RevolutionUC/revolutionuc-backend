@@ -35,5 +35,7 @@ export class ScoringService {
     }
 
     judges.forEach((judge) => this.scoreJudgeRankings(judge, submissions));
+
+    return submissions;
   }
 }

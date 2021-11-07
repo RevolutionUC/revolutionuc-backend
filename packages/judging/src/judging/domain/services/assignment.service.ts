@@ -88,7 +88,7 @@ export class AssignmentService {
     categories: Category[],
     submissions: Submission[],
     judges: Judge[],
-  ) {
+  ): [Group[], Category[], Submission[], Judge[]] {
     const groups = categories.flatMap((category) => {
       const categorySubmissions = submissions.filter(
         (submission) => submission.categoryId === category.id,
@@ -111,6 +111,6 @@ export class AssignmentService {
       );
     });
 
-    return groups;
+    return [groups, categories, submissions, judges];
   }
 }

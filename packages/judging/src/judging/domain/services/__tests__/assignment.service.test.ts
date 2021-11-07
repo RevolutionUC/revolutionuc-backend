@@ -64,7 +64,7 @@ describe(`AssignmentService`, () => {
   const judges = data.flatMap((d) => d[1]);
   const submissions = data.flatMap((d) => d[2]);
 
-  const groups = assignmentService.createGroups(
+  const [groups] = assignmentService.createGroups(
     categories,
     submissions,
     judges,

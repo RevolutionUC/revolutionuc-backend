@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from 'src/judging/infrastructure/Environment';
-import { CategoryRepository } from 'src/judging/infrastructure/Repositories/Category.repository';
-import { ProjectRepository } from 'src/judging/infrastructure/Repositories/Project.repository';
 import { AuthService } from 'src/judging/infrastructure/Services/Auth.service';
-import { EmailService } from 'src/judging/infrastructure/Services/Email.service';
-import { devpostParser } from '../../../util';
-import { Category } from '../../domain/category/category.entity';
+import { In, Repository } from 'typeorm';
+import { Category } from '../../domain/entities/category/category.entity';
+import { Group } from '../../domain/entities/group/group.entity';
 import { Judge } from '../../domain/entities/judge/judge.entity';
 import { Project } from '../../domain/entities/project/project.entity';
+import { Submission } from '../../domain/entities/submission/submission.entity';
+import { AssignmentService, ScoringService } from '../../domain/services';
 import { SubmissionService } from '../../domain/services/submission.service';
 import { CategoryDto } from '../dtos/category.dto';
 import { JudgeDto } from '../dtos/judge.dto';
@@ -20,44 +20,47 @@ export class CommandHandler {
   constructor(
     private readonly configService: ConfigService,
 
-    @InjectRepository(ProjectRepository)
-    private readonly projectRepository: ProjectRepository,
-    @InjectRepository(CategoryRepository)
-    private readonly categoryRepository: CategoryRepository,
+    @InjectRepository(Project)
+    private readonly projectRepository: Repository<Project>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Judge)
+    private readonly judgeRepository: Repository<Judge>,
+    @InjectRepository(Submission)
+    private readonly submissionRepository: Repository<Submission>,
+    @InjectRepository(Group)
+    private readonly groupRepository: Repository<Group>,
 
-    private readonly emailService: EmailService,
     private readonly authService: AuthService,
 
     private readonly submissionService: SubmissionService,
+    private readonly assignmentService: AssignmentService,
+    private readonly scoringService: ScoringService,
   ) {}
 
   async submitProjects(projectsData: Array<ProjectDto>): Promise<void> {
-    const categories = await this.categoryRepository.findAll();
+    const categories = await this.categoryRepository.find();
 
-    const projects = projectsData.map((projectData) => {
-      const project = Project.create(projectData);
-
-      const optInCategories = categories.filter((category) =>
-        projectData.categories.includes(category.name),
+    const data = projectsData.map((projectData) => {
+      const [project, submissions] = this.submissionService.submitProject(
+        projectData,
+        categories,
       );
 
-      this.submissionService.submitToMandatoryCategories(project, categories);
-      this.submissionService.submitToOptionalCategories(
-        project,
-        optInCategories,
-      );
-
-      return project;
+      return { project, submissions };
     });
 
-    await this.projectRepository.saveAll(projects);
-    await this.categoryRepository.saveAll(categories);
+    const projects = data.map((projectData) => projectData.project);
+    const submissions = data.flatMap((projectData) => projectData.submissions);
+
+    await this.projectRepository.save(projects);
+    await this.submissionRepository.save(submissions);
   }
 
   async createCategory(categoryData: CategoryDto): Promise<void> {
-    const existingCategory = await this.categoryRepository.findByName(
-      categoryData.name,
-    );
+    const existingCategory = await this.categoryRepository.findOne({
+      name: categoryData.name,
+    });
 
     if (existingCategory) {
       throw new Error('Category already exists');
@@ -70,13 +73,17 @@ export class CommandHandler {
 
   async registerJudge(dto: JudgeDto): Promise<void> {
     const JUDGE_PASSWORD = this.configService.get(`JUDGE_PASSWORD`);
-    const category = await this.categoryRepository.findById(dto.category);
+    const category = await this.categoryRepository.findOne(dto.category);
+
+    if (!category) {
+      throw new Error('Category does not exist');
+    }
 
     const judge = Judge.create(dto.name, dto.email);
 
-    category.assignJudge(judge);
+    judge.assignToCategory(category);
 
-    const savedJudge = await this.categoryRepository.save(category);
+    const savedJudge = await this.judgeRepository.save(judge);
 
     await this.authService.register({
       username: dto.email,
@@ -86,133 +93,123 @@ export class CommandHandler {
     });
   }
 
-  async removeJudge(categoryId: string, judgeId: string): Promise<void> {
-    const category = await this.categoryRepository.findById(categoryId);
+  async removeJudge(judgeId: string): Promise<void> {
+    const judge = await this.judgeRepository.findOne(judgeId);
 
-    const judge = category.judges.find((judge) => judge.id === judgeId);
+    if (!judge) {
+      throw new Error('Judge does not exist');
+    }
 
-    category.removeJudge(judge);
-
-    await this.categoryRepository.save(category);
+    await this.judgeRepository.delete(judgeId);
 
     await this.authService.unregister({ username: judge.email });
   }
 
-  async reassignJudge(
-    judgeId: string,
-    formCategoryId: string,
-    toCategoryId: string,
-  ): Promise<void> {
-    const formCategory = await this.categoryRepository.findById(formCategoryId);
-    const toCategory = await this.categoryRepository.findById(toCategoryId);
+  async reassignJudge(judgeId: string, newCategoryId: string): Promise<void> {
+    const judge = await this.judgeRepository.findOne(judgeId);
+    const newCategory = await this.categoryRepository.findOne(newCategoryId);
 
-    const judge = formCategory.judges.find((judge) => judge.id === judgeId);
+    if (!judge) {
+      throw new Error('Judge does not exist');
+    }
 
-    formCategory.removeJudge(judge);
-    toCategory.assignJudge(judge);
+    if (!newCategory) {
+      throw new Error('Category does not exist');
+    }
 
-    await this.categoryRepository.saveAll([formCategory, toCategory]);
-  }
+    judge.assignToCategory(newCategory);
 
-  async uploadDevpostCsv(file: Express.Multer.File): Promise<void> {
-    const csvString = file.buffer.toString();
-
-    const projects = devpostParser(csvString, {
-      titleColumn: this.configService.get(`DEVPOST_TITLE_COLUMN`),
-      urlColumn: this.configService.get(`DEVPOST_URL_COLUMN`),
-      categoryColumn: this.configService.get(`DEVPOST_CATEGORY_COLUMN`),
-    });
-
-    await this.submitProjects(projects);
+    await this.judgeRepository.save(judge);
   }
 
   async disqualifyProject(id: string, reason: string): Promise<void> {
-    const project = await this.projectRepository.findById(id);
+    const project = await this.projectRepository.findOne(id);
+
+    if (!project) {
+      throw new Error('Project does not exist');
+    }
+
     project.disqualify(reason);
     await this.projectRepository.save(project);
   }
 
   async requalifyProject(id: string): Promise<void> {
-    const project = await this.projectRepository.findById(id);
+    const project = await this.projectRepository.findOne(id);
+
+    if (!project) {
+      throw new Error('Project does not exist');
+    }
+
     project.requalify();
     await this.projectRepository.save(project);
   }
 
   async createJudgingGroups(): Promise<void> {
-    const categories = await this.categoryRepository.findAll();
+    const categories = await this.categoryRepository.find();
+    const submissions = await this.submissionRepository.find();
+    const judges = await this.judgeRepository.find();
 
-    categories.forEach((category) => {
-      category.createGroups();
-    });
+    const [groups, updatedCategories, updatedSubmissions, updatedJudges] =
+      this.assignmentService.createGroups(categories, submissions, judges);
 
-    await this.categoryRepository.saveAll(categories);
+    await this.categoryRepository.save(updatedCategories);
+    await this.submissionRepository.save(updatedSubmissions);
+    await this.judgeRepository.save(updatedJudges);
+    await this.groupRepository.save(groups);
   }
 
   async scoreSubmissions(): Promise<void> {
-    const categories = await this.categoryRepository.findAll();
+    const submissions = await this.submissionRepository.find();
+    const judges = await this.judgeRepository.find();
 
-    const indeterminateJudge = categories
-      .flatMap((category) => category.groups)
-      .flatMap((group) => group.judges)
-      .findIndex((judge) => !judge.isFinal);
+    const scoredSubmissions = this.scoringService.scoreSubmissions(
+      submissions,
+      judges,
+    );
 
-    if (indeterminateJudge !== -1) {
-      throw new Error(`Judge still deciding`);
-    }
-
-    categories.forEach((category) => {
-      category.scoreSubmissions();
-    });
-
-    await this.categoryRepository.saveAll(categories);
+    await this.submissionRepository.save(scoredSubmissions);
   }
 
-  async rankSubmissions(
-    categoryId: string,
-    judgeId: string,
-    rankings: Array<string>,
-  ): Promise<void> {
-    const category = await this.categoryRepository.findById(categoryId);
+  async rankSubmissions(judgeId: string, rankings: string[]): Promise<void> {
+    const judge = await this.judgeRepository.findOne(judgeId);
 
-    const judge = category.judges.find((judge) => judge.id === judgeId);
+    if (!judge) {
+      throw new Error('Judge does not exist');
+    }
 
-    const group = judge.group;
-
-    const submissions = rankings.map((submissionId) => {
-      const submission = group.submissions.find(
-        ({ id }) => id === submissionId,
-      );
-
-      if (!submission) {
-        throw new Error(`Submission not found`);
-      }
-
-      return submission;
+    const submissions = await this.submissionRepository.find({
+      where: { id: In(rankings) },
     });
 
     judge.rankSubmissions(submissions);
 
-    await this.categoryRepository.save(category);
+    await this.judgeRepository.save(judge);
   }
 
-  async finalizeRanking(categoryId: string, judgeId: string): Promise<void> {
-    const category = await this.categoryRepository.findById(categoryId);
-    const projects = await this.projectRepository.findAll();
+  async finalizeRanking(judgeId: string): Promise<void> {
+    const judge = await this.judgeRepository.findOne(judgeId);
 
-    const judges = category.groups.flatMap((group) => {
-      return group.judges.map((judge) => {
-        judge.group = group;
-        return judge;
-      });
+    if (!judge) {
+      throw new Error('Judge does not exist');
+    }
+
+    const submissions = await this.submissionRepository.find({
+      where: { judge: judgeId },
     });
 
-    const judge = judges.find((judge) => judge.id === judgeId);
-    const submissions = judge.group.submissions;
+    const projects = await this.projectRepository.find({
+      where: { id: In(submissions.map((submission) => submission.projectId)) },
+    });
 
-    RankingGuard(judge, submissions, projects, Judge.RANK_TO_SCORE.length);
+    RankingGuard(
+      judge,
+      submissions,
+      projects,
+      ScoringService.RANK_TO_SCORE.length,
+    );
 
     judge.finalizeRanking();
 
-    await this.categoryRepository.save(category);
+    await this.judgeRepository.save(judge);
   }
 }

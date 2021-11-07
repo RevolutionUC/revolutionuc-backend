@@ -1,5 +1,8 @@
 import { Judge } from 'src/judging/domain/entities/judge/judge.entity';
-import { Submission } from 'src/judging/domain/entities/submission/submission.entity';
+import {
+  Submission,
+  SubmissionId,
+} from 'src/judging/domain/entities/submission/submission.entity';
 import { Project } from 'src/judging/domain/entities/project/project.entity';
 
 const RankingTooLongGuard = (judge: Judge, limit: number) => {
@@ -40,6 +43,26 @@ const DisqualifiedProjectGuard = (project: Project) => {
   }
 };
 
+const SubmissionAndProjectExistsGuard = (
+  submissionId: SubmissionId,
+  submissionsToGroup: Submission[],
+  projects: Project[],
+) => {
+  const submission = submissionsToGroup.find(({ id }) => id === submissionId);
+
+  if (!submission) {
+    throw new Error(`Submission not found`);
+  }
+
+  const project = projects.find(({ id }) => id === submission.projectId);
+
+  if (!project) {
+    throw new Error(`Project not found`);
+  }
+
+  return project;
+};
+
 export const RankingGuard = (
   judge: Judge,
   submissionsToGroup: Submission[],
@@ -49,9 +72,11 @@ export const RankingGuard = (
   RankingLengthGuard(judge, submissionsToGroup, rankingLimit);
 
   judge.rankings.forEach((submissionId) => {
-    const submission = submissionsToGroup.find(({ id }) => id === submissionId);
-
-    const project = projects.find(({ id }) => id === submission.projectId);
+    const project = SubmissionAndProjectExistsGuard(
+      submissionId,
+      submissionsToGroup,
+      projects,
+    );
 
     DisqualifiedProjectGuard(project);
   });
