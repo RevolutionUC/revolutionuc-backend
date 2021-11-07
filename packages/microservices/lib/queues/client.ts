@@ -2,7 +2,14 @@ import { OnModuleInit, Logger } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
-import { QUEUE_TOKENS } from '@revuc/contract';
+import { QUEUE_TOKENS, MESSAGE_TOKENS } from '@revuc/contract';
+
+const queueToMessage = (queue: keyof typeof QUEUE_TOKENS) => {
+  if (queue === 'EVENT_QUEUE') {
+    return MESSAGE_TOKENS.EVENT_TOKEN;
+  }
+  return MESSAGE_TOKENS.EMAIL_TOKEN;
+};
 
 const METADATA_KEY = 'QUEUE-METADATA';
 
@@ -30,6 +37,8 @@ export abstract class QueueClient implements OnModuleInit {
   protected async send(message: string, dto: any): Promise<void> {
     this.logger.log(`Sending message ${message}`);
 
-    return lastValueFrom(this.client.emit<void>(message, dto));
+    return lastValueFrom(
+      this.client.send<void>(`${queueToMessage(this.token)}.${message}`, dto),
+    );
   }
 }
