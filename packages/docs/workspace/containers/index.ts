@@ -1,13 +1,9 @@
-import * as Frontends from './frontends'
-import * as Infrastructure from './infrastructure'
+import * as Frontends from './frontends';
+import * as Infrastructure from './infrastructure';
 import * as Services from './services';
-export * from './frontends'
-export * from './infrastructure'
+export * from './frontends';
+export * from './infrastructure';
 
-import './relations'
+import './relations';
 
-export {
-  Frontends,
-  Infrastructure,
-  Services
-};
+export { Frontends, Infrastructure, Services };

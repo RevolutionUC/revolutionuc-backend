@@ -1,12 +1,20 @@
-import { workspace } from "../workspace";
-import { registrant, organizer, judge } from "../persons";
-import { system, discord, mailgun } from "../systems";
-import { admin, api, devWebsite, judging, lattice, stats, website } from "../containers";
+import { workspace } from '../workspace';
+import { registrant, organizer, judge } from '../persons';
+import { system, discord, mailgun } from '../systems';
+import {
+  admin,
+  api,
+  devWebsite,
+  judging,
+  lattice,
+  stats,
+  website,
+} from '../containers';
 
 export const frontendView = workspace.views.createContainerView(
   system,
   'system-frontend',
-  'Container view for the RevolutionUC system'
+  'Container view for the RevolutionUC system',
 );
 frontendView.addSoftwareSystem(discord);
 frontendView.addSoftwareSystem(mailgun);

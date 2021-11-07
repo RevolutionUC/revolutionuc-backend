@@ -1,6 +1,17 @@
-import { website, devWebsite, admin, emails, judging, stats, assets, lattice, api, revvit } from "./containers";
-import { organizer, registrant, judge } from "./persons";
-import { system, discord, mailgun } from "./systems";
+import {
+  website,
+  devWebsite,
+  admin,
+  emails,
+  judging,
+  stats,
+  assets,
+  lattice,
+  api,
+  revvit,
+} from './containers';
+import { organizer, registrant, judge } from './persons';
+import { system, discord, mailgun } from './systems';
 
 registrant.uses(website, 'registers');
 registrant.uses(system, 'registers using and gets information');
