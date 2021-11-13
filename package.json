@@ -5,6 +5,7 @@
     "lerna": "^4.0.0"
   },
   "scripts": {
+    "bootstrap": "lerna bootstrap --hoist",
     "majestic:judging": "lerna exec --scope=@revuc/judging -- majestic",
     "test:judging": "lerna exec --scope=@revuc/judging -- npm run test",
     "lint:judging": "lerna exec --scope=@revuc/judging -- npm run lint",
