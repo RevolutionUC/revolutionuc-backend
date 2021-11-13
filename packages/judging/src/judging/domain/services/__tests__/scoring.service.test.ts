@@ -50,7 +50,7 @@ describe(`ScoringService`, () => {
     scoringService.scoreSubmissions(submissions, judges);
 
     const scores = submissions.map((submission) => submission.score);
-    console.log(JSON.stringify({ submissions, scores }));
+
     expect(scores).toEqual(expectedScores);
   });
 });

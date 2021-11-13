@@ -101,8 +101,6 @@ export class AssignmentService {
         categoryJudges.length / category.judgesPerGroup,
       );
 
-      console.log({ category, groupCount });
-
       return this.createGroupsForCategory(
         category,
         categorySubmissions,
