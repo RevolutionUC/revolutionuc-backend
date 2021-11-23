@@ -2,15 +2,13 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ApplicationModule } from '../application/application.module';
-import { Role } from '../domain/role/role.entity';
-import { User } from '../domain/user/user.entity';
-import {
-  CommandController,
-  QueryController,
-  EventController,
-} from './Controllers';
+import { Controllers } from './Controllers';
 import { ConfigProvider, ConfigService } from './Environment';
+import { ApplicationModule } from '../application/application.module';
+import { Services } from './Services';
+import { Repositories } from './Repositories';
+import { RoleRepository } from './Repositories/Role.repository';
+import { UserRepository } from './Repositories/User.repository';
 
 @Module({
   imports: [
@@ -33,10 +31,11 @@ import { ConfigProvider, ConfigService } from './Environment';
       }),
       inject: [ConfigProvider],
     }),
-    TypeOrmModule.forFeature([User, Role]),
+    TypeOrmModule.forFeature([UserRepository, RoleRepository]),
     CqrsModule,
     ApplicationModule,
   ],
-  controllers: [CommandController, QueryController, EventController],
+  controllers: [...Controllers],
+  providers: [...Repositories, ...Services],
 })
 export class InfrastructureModule {}

@@ -1,6 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Password } from './password';
 
 @Entity()
 export class User {
@@ -13,7 +12,7 @@ export class User {
     const user = new User();
 
     user.username = username;
-    user.password = await Password.create(password);
+    user.password = password;
     user.role = roleId;
     user.scope = scope;
 
@@ -30,13 +29,8 @@ export class User {
 
   @IsNotEmpty()
   @IsString()
-  @Column({
-    transformer: {
-      to: (password: Password) => password.toString(),
-      from: (password: string) => new Password(password),
-    },
-  })
-  password: Password;
+  @Column()
+  password: string;
 
   @IsNotEmpty()
   @IsString()
@@ -48,11 +42,15 @@ export class User {
   @Column()
   role: string;
 
-  async changePassword(newPassword: string) {
-    this.password = await Password.create(newPassword);
+  changePassword(newPassword: string) {
+    this.password = newPassword;
   }
 
-  checkPermission(role: string, scope: string): boolean {
-    return this.role === role && this.scope === scope;
+  checkPermission(role: string, scope: string): void {
+    const legit = this.role === role && this.scope === scope;
+
+    if (!legit) {
+      throw new Error('User does not have permission');
+    }
   }
 }

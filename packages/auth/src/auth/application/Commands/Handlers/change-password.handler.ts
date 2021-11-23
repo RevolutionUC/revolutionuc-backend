@@ -1,8 +1,6 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/auth/domain/user/user.entity';
-import { AuthenticateService } from 'src/auth/infrastructure/Services/Authenticate.service';
-import { Repository } from 'typeorm';
+import { IHashService, ITokenService, IUserRepository } from '../../Interfaces';
 import { ChangePasswordCommand } from '../Impl/change-password';
 
 @CommandHandler(ChangePasswordCommand)
@@ -10,19 +8,21 @@ export class ChangePasswordHandler
   implements ICommandHandler<ChangePasswordCommand>
 {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    private readonly authenticateService: AuthenticateService,
+    @Inject(IUserRepository)
+    private readonly userRepository: IUserRepository,
+    private readonly tokenService: ITokenService,
+    private readonly hashService: IHashService,
   ) {}
 
   async execute(command: ChangePasswordCommand) {
     const { token, password } = command;
 
-    const { userId } = await this.authenticateService.validateToken(token);
+    const { userId } = await this.tokenService.validateToken(token);
+    const hashedPassword = await this.hashService.hash(password);
 
-    const user = await this.userRepository.findOne(userId);
+    const user = await this.userRepository.findById(userId);
 
-    await user.changePassword(password);
+    user.changePassword(hashedPassword);
 
     await this.userRepository.save(user);
   }

@@ -1,3 +1,9 @@
-export { CommandController } from './Command.controller';
-export { QueryController } from './Query.controller';
-export { EventController } from './Event.controller';
+import { CommandController } from './Command.controller';
+import { QueryController } from './Query.controller';
+import { EventController } from './Event.controller';
+
+export const Controllers = [
+  CommandController,
+  QueryController,
+  EventController,
+];
